@@ -1,5 +1,5 @@
 let fields = [
-    null,
+    'circle',
     null,
     null,
     null,
@@ -21,23 +21,22 @@ function render() {
     const container = document.getElementById('content'); // Document mit content wird geholt
     const table = document.createElement('table');
     for (let i = 0; i < 3; i++) {
-        const row = document.createElement('tr'); // 3 Zeilen werden erstellt
+        const row = document.createElement('tr'); // 3 Zeile werden erstellt
         for (let j = 0; j < 3; j++) {
-          const cell = document.createElement('td'); // 3 (3x3) Felder werden erstellt
+          const cell = document.createElement('td'); // 3 Felder werden erstellt
           cell.classList.add('hover-cell'); // CSS-Klasse für Hover-Effekt über td
           const index = i * 3 + j; // jeweilige Zeile x 3 um den Index zu bekommen
           const fieldValue = fields[index]; // index vom Array
 
           if (fieldValue === 'circle') { // wenn "circle" im Array steht, soll es ein O sein
-            // const svgElement = generateCircleSVG();
-            // cell.appendChild(svgElement);
-            cell.innerHTML = generateCircleSVG();
+            const svgElement = generateCircleSVG();
+            cell.appendChild(svgElement);
           } else if (fieldValue === 'cross') { // wenn "cross" im Array steht, soll es ein X sein
             cell.innerHTML = generateCrossSVG();   
           } else {
             // Füge die onclick-Funktion hinzu, wenn das Feld leer ist
             cell.onclick = function() {
-            handleClick(cell, index);
+                handleClick(cell, index);
             };
         }
 
@@ -52,13 +51,21 @@ function render() {
 }
 
 function handleClick(cell, index) {
+    // Abwechselnd 'circle' oder 'cross' in das Array einfügen
+    fields[index] = (fields[index] === 'cross') ? 'cross' : 'circle';
 
-    if (fields[index] === null) {// Überprüfe, ob das Feld im Array leer ist
-        fields[index] = currentPlayer; // Fülle das Feld im Array mit dem aktuellen Spieler ('circle' oder 'cross')
-        cell.innerHTML = currentPlayer === 'circle' ? generateCircleSVG() : generateCrossSVG(); // Füge den HTML-Code von generateCircleSVG() oder generateCrossSVG() in die Zelle ein
-        cell.onclick = null // Entferne das onclick-Event, um mehrfaches Klicken zu verhindern
-        currentPlayer = currentPlayer === 'circle' ? 'cross' : 'circle';  // Wechsle zum anderen Spieler ('circle' zu 'cross' oder umgekehrt)
+    // HTML-Code von generateCircleSVG() oder generateCrossSVG() einfügen
+    if (fields[index] === 'circle') {
+        const svgElement = generateCircleSVG();
+        cell.appendChild(svgElement);
+    } else if (fields[index] === 'cross') {
+        cell.innerHTML = generateCrossSVG();
     }
+
+    // onclick-Funktion vom Zellelement entfernen
+    cell.onclick = function() {
+        // Wenn auf eine bereits geklickte Zelle erneut geklickt wird, soll nichts passieren
+    };
 }
 init();
 
@@ -95,7 +102,7 @@ function generateCircleSVG() {
     circleElement.appendChild(animateElement);
 
     // Gib das vollständige SVG-Element zurück
-    return svgElement.outerHTML;
+    return svgElement;
   }
         
   
